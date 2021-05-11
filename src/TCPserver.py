@@ -20,15 +20,21 @@ class TCPserver:
             
             try:
                 server.bind(("" , self.serverPort))
-                server.listen(1)
+
+                server.listen()
+
+                print("Server listening to. " + pycolors.FAIL + "Server " + pycolors.ENDC + f"---> 127.0.0.1" +  pycolors.FAIL + " Port " + pycolors.ENDC + f"---> {self.serverPort} |" + pycolors.OKGREEN + " CONNECTED\n" + pycolors.ENDC)
+
+                senderSocket, Address = server.accept()
+
+                self.__fileReciever(senderSocket, Address)
+
+                senderSocket.close()
+
             
             except socket.error as msg:
                 print(f"Couldnt connect with the localhost with IP Address: 127.0.0.1\n{msg}\nTerminating program.")
                 sys.exit(1)
-
-            print("Server listening to. " + pycolors.FAIL + "Server " + pycolors.ENDC + f"---> 127.0.0.1" +  pycolors.FAIL + " Port " + pycolors.ENDC + f"---> {self.serverPort} |" + pycolors.OKGREEN + " CONNECTED\n" + pycolors.ENDC)
-
-            self.__fileReciever(server)
 
         sys.exit(0)
 
@@ -50,10 +56,9 @@ class TCPserver:
             sys.exit(1)
 
 
-    def __fileReciever(self, server):
+    def __fileReciever(self, senderSocket, Address):
         
         try:
-            senderSocket, Address = server.accept()
 
             print(f"... Incomming Connection from {Address[0]} |" + pycolors.OKGREEN + " CONNECTED" + pycolors.ENDC)
 
@@ -74,8 +79,7 @@ class TCPserver:
                         break
 
                     file.write(recvByte)
-
-            senderSocket.close()
+            
             print("\nFile Recieved from " + pycolors.FAIL + "Server " + pycolors.ENDC + "-----> " + pycolors.WARNING + "IP: " + pycolors.ENDC + f"{Address} " + pycolors.WARNING + "PORT: " + pycolors.ENDC + f"{self.serverPort} |" + pycolors.OKGREEN + " SUCCESSFULLY" + pycolors.ENDC)
 
         except socket.error as msg:

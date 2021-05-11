@@ -16,15 +16,15 @@ class TCPclient:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
         
             try:
-                client.connect_ex((self.hostName , self.hostPort))
-            
+                client.connect((self.hostName , self.hostPort))
+
+                print("Connection Established. " + pycolors.FAIL + "Server " + pycolors.ENDC + f"---> {self.hostName}" +  pycolors.FAIL + " Port " + pycolors.ENDC + f"---> {self.hostPort} |" + pycolors.OKGREEN + " CONNECTED" + pycolors.ENDC)
+
+                self.__fileSender(client)
+
             except socket.error as msg:
                 print(f"Couldnt connect with the server with IP Address: {self.hostName}\n{msg}\nTerminating program.")
                 sys.exit(1)
-
-            print("Connection Established. " + pycolors.FAIL + "Server " + pycolors.ENDC + f"---> {self.hostName}" +  pycolors.FAIL + " Port " + pycolors.ENDC + f"---> {self.hostPort} |" + pycolors.OKGREEN + " CONNECTED" + pycolors.ENDC)
-
-            self.__fileSender(client)
 
         sys.exit(0)
 
