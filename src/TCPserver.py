@@ -19,9 +19,9 @@ class TCPserver:
             server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             
             try:
-                server.bind(("" , self.serverPort))
+                server.bind(("0.0.0.0" , self.serverPort))
 
-                server.listen()
+                server.listen(5)
 
                 print("Server listening to. " + pycolors.FAIL + "Server " + pycolors.ENDC + f"---> 127.0.0.1" +  pycolors.FAIL + " Port " + pycolors.ENDC + f"---> {self.serverPort} |" + pycolors.OKGREEN + " CONNECTED\n" + pycolors.ENDC)
 
