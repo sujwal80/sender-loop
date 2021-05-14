@@ -3,7 +3,7 @@
 import os
 import sys
 import socket
-from colorziPython import pycolors
+from colorziePython import pycolors
 from encryption.AESencryption import AEScipher
 
 
