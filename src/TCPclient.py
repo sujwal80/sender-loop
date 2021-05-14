@@ -4,6 +4,7 @@ import os
 import sys
 import socket
 from colorziPython import pycolors
+from encryption.AESencryption import AEScipher
 
 
 class TCPclient:
@@ -16,7 +17,6 @@ class TCPclient:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
         
             try:
-                print(self.hostName, self.hostPort)
                 client.connect((self.hostName , self.hostPort))
 
                 print("Connection Established. " + pycolors.FAIL + "Server " + pycolors.ENDC + f"---> {self.hostName}" +  pycolors.FAIL + " Port " + pycolors.ENDC + f"---> {self.hostPort} |" + pycolors.OKGREEN + " CONNECTED" + pycolors.ENDC)
@@ -55,11 +55,12 @@ class TCPclient:
     def __fileSender(self, client):
         fileSize = os.path.getsize(self.fileName)
         SEPARATOR = "<SEPARATOR>"
+        encryMethod = AEScipher()
 
         try:
-            client.send(f"{os.path.basename(self.fileName)}{SEPARATOR}{fileSize}".encode("cp1252"))
+            client.send(encryMethod.encrypt(f"{os.path.basename(self.fileName)}{SEPARATOR}{fileSize}"))
 
-            with open(self.fileName, 'rb') as file:
+            with open(self.fileName, 'r') as file:
                 while True:
 
                     curByte = file.read(4096)
@@ -67,7 +68,7 @@ class TCPclient:
                     if not curByte:
                         break
 
-                    client.send(curByte)
+                    client.send(encryMethod.encrypt(curByte))
 
             print("\nFile Transfered to " + pycolors.FAIL + "Server " + pycolors.ENDC + "-----> " + pycolors.WARNING + "IP: " + pycolors.ENDC + f"{self.hostName} " + pycolors.WARNING + "PORT: " + pycolors.ENDC + f"{self.hostPort} |" + pycolors.OKGREEN + " SUCCESSFULLY" + pycolors.ENDC)
 

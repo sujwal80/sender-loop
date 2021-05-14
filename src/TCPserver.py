@@ -4,7 +4,7 @@ import os
 import sys
 import socket
 from colorziPython import pycolors
-
+from encryption.AESencryption import AEScipher
 
 
 class TCPserver:
@@ -59,12 +59,13 @@ class TCPserver:
     def __fileReciever(self, senderSocket, Address):
         
         try:
+            decryMethod = AEScipher()
 
             print(f"... Incomming Connection from {Address[0]} |" + pycolors.OKGREEN + " CONNECTED" + pycolors.ENDC)
 
-            fileRecv = senderSocket.recv(1024).decode('cp1252')
-
-            fileName, fileSize = fileRecv.split("<SEPARATOR>")
+            fileRecv = decryMethod.decrypt(senderSocket.recv(1024))
+            
+            fileName, fileSize = fileRecv.decode().split("<SEPARATOR>")
 
             fileName = os.path.basename(fileName)
             fileSize = int(fileSize)
@@ -78,7 +79,7 @@ class TCPserver:
                     if not recvByte:
                         break
 
-                    file.write(recvByte)
+                    file.write(decryMethod.decrypt(recvByte))
             
             print("\nFile Recieved from " + pycolors.FAIL + "Server " + pycolors.ENDC + "-----> " + pycolors.WARNING + "IP: " + pycolors.ENDC + f"{Address} " + pycolors.WARNING + "PORT: " + pycolors.ENDC + f"{self.serverPort} |" + pycolors.OKGREEN + " SUCCESSFULLY" + pycolors.ENDC)
 
